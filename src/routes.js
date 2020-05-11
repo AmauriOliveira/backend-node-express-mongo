@@ -1,43 +1,12 @@
 const routes = require('express').Router();
+const ProdutoController = require('./controllers/ProdutoController');
 
-const Produto = require('./models/Produto');
+routes.get('/produtos/:cod?', ProdutoController.index);
 
-routes.get('/produtos/:cod?', async (req, res) => {
+routes.post('/produtos', ProdutoController.create);
 
-    const produto = await Produto
-        .find()
-        .where(req.params.cod != null ? { cod: req.params.cod } : {})
-        .select(req.params.cod != null ? '' : 'cod descricao');//''= alls
-    res.json(produto);
-});
+routes.put('/produtos/:cod', ProdutoController.update);
 
-routes.post('/produtos', async (req, res) => {
-
-    const { cod, preco, descricao, quantidade } = req.body;
-
-    const produto = await Produto.create({
-        cod,
-        preco,
-        descricao,
-        quantidade,
-    });
-    return res.json(produto);
-});
-
-routes.put('/produtos/:cod', async (req, res) => {
-
-    const { preco, quantidade } = req.body;
-    // const produto 
-    await Produto.updateOne({ cod: req.params.cod }, { quantidade, preco, })
-
-    return res.status(200).send('Ok');
-});
-
-routes.delete('/produtos/:cod', async (req, res) => {
-    // const produto 
-    await Produto.deleteOne({ cod: req.params.cod });
-
-    return res.status(200).send('Ok');
-});
+routes.delete('/produtos/:cod', ProdutoController.delete);
 
 module.exports = routes;
