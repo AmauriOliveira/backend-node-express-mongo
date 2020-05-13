@@ -3,24 +3,25 @@ const Produto = require('../models/Produto');
 module.exports = {
 
     async index(request, response) {
-        const { d = '' } = request.query;
+        const { n = '' } = request.query;
 
         const produto = await Produto
             .find()
             .where(request.params.cod != null ?
                 { cod: request.params.cod } :
-                { descricao: { $regex: d, '$options': 'i' } })
+                { nome: { $regex: n, '$options': 'i' } })
             .select(request.params.cod != null ?
                 '' :
-                'cod descricao');//''= alls
+                'cod nome');//''= alls
         response.json(produto);
     },
     async create(request, response) {
-        const { cod, preco, descricao, quantidade } = request.body;
+        const { cod, preco, nome, descricao, quantidade } = request.body;
 
         const produto = await Produto.create({
             cod,
             preco,
+            nome,
             descricao,
             quantidade,
         });
@@ -28,9 +29,9 @@ module.exports = {
     },
     async update(request, response) {
 
-        const { preco, quantidade } = request.body;
+        const { preco, quantidade, nome, descricao } = request.body;
         // const produto 
-        await Produto.updateOne({ cod: request.params.cod }, { quantidade, preco, })
+        await Produto.updateOne({ cod: request.params.cod }, { quantidade, preco, nome, descricao })
 
         return response.status(200).send('Ok');
     },
