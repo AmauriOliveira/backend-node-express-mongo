@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const routes = require('./routes');
 const morgan = require('morgan');
-const mongoose = require('./database');
 
 
 const app = express();

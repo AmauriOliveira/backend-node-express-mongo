@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
+const mongoose = require('../database');
 
 const CaixaSchema = new mongoose.Schema({
     valor: {

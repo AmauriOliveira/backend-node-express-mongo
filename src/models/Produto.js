@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
+const mongoose = require('../database');
 
 const ProdutoSchema = new mongoose.Schema({
     cod: {
@@ -17,7 +18,6 @@ const ProdutoSchema = new mongoose.Schema({
         lowercase: true,
         index: true,
         unique: true
-
     },
     descricao: String,
     quantidade: {

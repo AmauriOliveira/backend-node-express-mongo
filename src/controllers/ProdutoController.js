@@ -3,42 +3,63 @@ const Produto = require('../models/Produto');
 module.exports = {
 
     async index(request, response) {
-        const { n = '' } = request.query;
+        try {
+            const { n = '' } = request.query;
 
-        const produto = await Produto
-            .find()
-            .where(request.params.cod != null ?
-                { cod: request.params.cod } :
-                { nome: { $regex: n, '$options': 'i' } })
-            .select(request.params.cod != null ?
-                '' :
-                'cod nome');//''= alls
-        response.json(produto);
+            const produto = await Produto
+                .find()
+                .where(request.params.cod != null ?
+                    { cod: request.params.cod } :
+                    { nome: { $regex: n, '$options': 'i' } })
+                .select(request.params.cod != null ?
+                    '' :
+                    'cod nome');//''= alls
+            return response.json(produto);
+        } catch (error) {
+            return response.status(400).send({ error: 'Falha ao pesquisar produtos' })
+        }
     },
     async create(request, response) {
-        const { cod, preco, nome, descricao, quantidade } = request.body;
+        try {
+            const { cod, preco, nome, descricao, quantidade } = request.body;
 
-        const produto = await Produto.create({
-            cod,
-            preco,
-            nome,
-            descricao,
-            quantidade,
-        });
-        return response.json(produto);
+            if (await Produto.findOne({ cod })) {
+                return response.status(400).send({ error: 'Falha: Cod já existe' })
+            }
+            if (await Produto.findOne({ nome })) {
+                return response.status(400).send({ error: 'Falha: Produto com este nome já existe' })
+            }
+            const produto = await Produto.create({
+                cod,
+                preco,
+                nome,
+                descricao,
+                quantidade,
+            });
+            return response.json(produto);
+        } catch (error) {
+            return response.status(400).send({ error: 'Falha ao adcionar um novo produto' })
+        }
     },
     async update(request, response) {
+        try {
+            const { preco, quantidade, nome, descricao } = request.body;
+            // const produto 
+            await Produto.updateOne({ cod: request.params.cod }, { quantidade, preco, nome, descricao, createdAt: Date.now() })
 
-        const { preco, quantidade, nome, descricao } = request.body;
-        // const produto 
-        await Produto.updateOne({ cod: request.params.cod }, { quantidade, preco, nome, descricao })
-
-        return response.status(200).send('Ok');
+            return response.status(200).send('Ok');
+        } catch (error) {
+            return response.status(400).send({ error: 'Falha ao alterar um produto' })
+        }
     },
     async delete(request, response) {
-        // const produto 
-        await Produto.deleteOne({ cod: request.params.cod });
+        try {
+            // const produto 
+            await Produto.deleteOne({ cod: request.params.cod });
 
-        return response.status(200).send('Ok');
+            return response.status(200).send('Ok');
+        } catch (error) {
+            return response.status(400).send({ error: 'Falha ao apagar um produto' })
+        }
     }
 };
