@@ -12,7 +12,7 @@ module.exports = {
                     { cod: request.params.cod } :
                     { nome: { $regex: n, '$options': 'i' } })
                 .select(request.params.cod != null ?
-                    '' :
+                    'cod preco nome descricao quantidade createdAt' :
                     'cod nome');//''= alls
             return response.json(produto);
         } catch (error) {
@@ -41,10 +41,19 @@ module.exports = {
             return response.status(400).send({ error: 'Falha ao adcionar um novo produto' })
         }
     },
+    async createArray(request, response) {
+        try {
+            const produto = await Produto.insertMany(request.body, function (error, docs) { });
+
+            return response.json(produto);
+        } catch (error) {
+            return response.status(400).send({ error: 'Falha ao adcionar um array de produtos' })
+        }
+    },
     async update(request, response) {
         try {
             const { preco, quantidade, nome, descricao } = request.body;
-            // const produto 
+
             await Produto.updateOne({ cod: request.params.cod }, { quantidade, preco, nome, descricao, createdAt: Date.now() })
 
             return response.status(200).send('Ok');
@@ -54,7 +63,7 @@ module.exports = {
     },
     async delete(request, response) {
         try {
-            // const produto 
+
             await Produto.deleteOne({ cod: request.params.cod });
 
             return response.status(200).send('Ok');

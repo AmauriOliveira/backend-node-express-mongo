@@ -1,15 +1,20 @@
 const routes = require('express').Router();
 const ProdutoController = require('./controllers/ProdutoController');
-const AuthController = require('./controllers/AuthController')
+const AuthController = require('./controllers/AuthController');
+const authMiddleware = require('./middlewares/auth');
 
 routes.get('/produtos/:cod?', ProdutoController.index);
 
-routes.post('/produtos', ProdutoController.create);
+routes.post('/produtos', authMiddleware, ProdutoController.create);
 
-routes.put('/produtos/:cod', ProdutoController.update);
+routes.post('/produtos_array', authMiddleware, ProdutoController.createArray);
 
-routes.delete('/produtos/:cod', ProdutoController.delete);
+routes.put('/produtos/:cod', authMiddleware, ProdutoController.update);
 
-routes.post('/register',AuthController.create);
+routes.delete('/produtos/:cod', authMiddleware, ProdutoController.delete);
+
+routes.post('/register', AuthController.register);
+
+routes.post('/authenticate', AuthController.auth);
 
 module.exports = routes;

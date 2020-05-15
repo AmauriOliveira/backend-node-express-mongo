@@ -1,7 +1,14 @@
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const jsonWT = require('jsonwebtoken');
+
+function generateToken(params = {}) {
+    return jsonWT.sign({ params }, process.env.SECRET_MD5, { expiresIn: 86400 });
+}
 
 module.exports = {
-    async create(request, response) {
+
+    async register(request, response) {
         try {
             const { nome, email, senha } = request.body;
 
@@ -15,12 +22,34 @@ module.exports = {
                 senha
             });
             user.senha = undefined;
-            
-            return response.json(user);//refatorar
+
+            return response.send({ user, token: generateToken({ id: user.id }), });
+
         } catch (error) {
             return response.status(400).send({ error: 'Falha ao adcionar um novo User' })
         }
+    },
+    async auth(request, response) {
+        try {
+            const { email, senha } = request.body;
 
+            const user = await User.findOne({ email }).select('+senha');
+
+            if (!user) {
+                return response.status(400).send({ error: 'Erro: Login Failed' });
+            }
+
+            if (!await bcrypt.compare(senha, user.senha)) {
+                return response.status(400).send({ error: 'Erro: Login Failed' });
+            }
+
+            user.senha = undefined;
+
+            return response.send({ user, token: generateToken({ id: user.id }), });
+
+        } catch (error) {
+            return response.status(400).send({ error: 'Falha ao fazer login, tente novamente' })
+        }
     },
 };
-//https://youtu.be/BN_8bCfVp88?t=862
+//https://youtu.be/KKTX1l3sZGk?t=655
