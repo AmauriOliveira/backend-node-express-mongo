@@ -13,12 +13,13 @@ module.exports = {
                     { nome: { $regex: n, '$options': 'i' } })
                 .select(request.params.cod != null ?
                     'cod preco nome descricao quantidade createdAt' :
-                    'cod nome');//''= alls
+                    'cod nome preco quantidade');//''= alls
             return response.json(produto);
         } catch (error) {
             return response.status(400).send({ error: 'Falha ao pesquisar produtos' })
         }
     },
+
     async create(request, response) {
         try {
             const { cod, preco, nome, descricao, quantidade } = request.body;
@@ -41,6 +42,7 @@ module.exports = {
             return response.status(400).send({ error: 'Falha ao adcionar um novo produto' })
         }
     },
+
     async createArray(request, response) {
         try {
             const produto = await Produto.insertMany(request.body, function (error, docs) { });
@@ -50,6 +52,7 @@ module.exports = {
             return response.status(400).send({ error: 'Falha ao adcionar um array de produtos' })
         }
     },
+
     async update(request, response) {
         try {
             const { preco, quantidade, nome, descricao } = request.body;
@@ -61,6 +64,7 @@ module.exports = {
             return response.status(400).send({ error: 'Falha ao alterar um produto' })
         }
     },
+    
     async delete(request, response) {
         try {
 

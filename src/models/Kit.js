@@ -1,12 +1,7 @@
 const mongoose = require('../database');
 
-const ProdutoSchema = new mongoose.Schema({
-    cod: {
-        type: Number,
-        require: true,
-        index: true,
-        unique: true
-    },
+const KitSchema = new mongoose.Schema({
+
     preco: {
         type: Number,
         require: true,
@@ -18,19 +13,19 @@ const ProdutoSchema = new mongoose.Schema({
         index: true,
         unique: true
     },
-    descricao: String,
+    produtos: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Produto',
+       // require: true
+    }],
     quantidade: {
         type: Number,
         require: true,
     },
-    kits: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Kit'
-    }],
     createdAt: {
         type: Date,
         default: Date.now,
     },
 });
 
-module.exports = mongoose.model("Produto", ProdutoSchema);
+module.exports = mongoose.model("Kit", KitSchema);
