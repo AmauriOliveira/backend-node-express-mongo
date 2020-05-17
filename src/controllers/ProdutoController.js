@@ -12,7 +12,7 @@ module.exports = {
                     { cod: request.params.cod } :
                     { nome: { $regex: n, '$options': 'i' } })
                 .select(request.params.cod != null ?
-                    'cod preco nome descricao quantidade createdAt' :
+                    'cod preco nome descricao quantidade createdAt kits' :
                     'cod nome preco quantidade');//''= alls
             return response.json(produto);
         } catch (error) {
@@ -64,7 +64,7 @@ module.exports = {
             return response.status(400).send({ error: 'Falha ao alterar um produto' })
         }
     },
-    
+
     async delete(request, response) {
         try {
 

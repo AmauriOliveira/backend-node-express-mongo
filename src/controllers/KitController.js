@@ -12,8 +12,8 @@ module.exports = {
                     { _id: request.params.id } ://se o id não for null
                     { nome: { $regex: n, '$options': 'i' } }) //se o id for null
                 .select(request.params.id != null ?
-                    '' : ' nome preco quantidade')//''= alls */ 
-                .populate('produtos');
+                    '' : ' nome preco quantidade produtos')//''= alls */ 
+                .populate(request.params.id != null ? 'produtos' : null);
             return response.json(kit);
         } catch (error) {
             return response.status(400).send({ error: 'Falha ao pesquisar kit' })
@@ -34,6 +34,11 @@ module.exports = {
             });
             await Promise.all(produtos.map(async produto => {
                 const prod = await Produto.findById(produto._id);//busca o kit pelo ID
+                await Produto.findByIdAndUpdate(produto._id, {
+                    $push: { "kits": [...prod.kits, kit._id] }
+                }, {
+                    new: true
+                });
                 kit.produtos.push(prod);//marca o produto no kit
             }));
 
@@ -41,13 +46,15 @@ module.exports = {
 
             return response.json(kit);
         } catch (error) {
+            console.log(error);
+
             return response.status(400).send({ error: 'Falha ao adcionar um novo kit' })
         }
     },
 
     async update(request, response) {
         try {
-            const { preco, nome, produtos, quantidade } = request.body;
+            const { preco, nome, quantidade } = request.body;
 
             const kit = await Kit.findByIdAndUpdate(request.params.id, {
                 preco,
@@ -56,10 +63,27 @@ module.exports = {
             }, {
                 new: true
             });
-            kit.produtos = [];//reseta
 
-            await Promise.all(produtos.map(async produto => {
+            /////////////////clean
+            const { produtos } = await Kit
+                .findOne({ _id: request.params.id });
+
+            for (prod of produtos) {
+                await Produto.findByIdAndUpdate(prod, {
+                    $pull: { "kits": request.params.id }
+                }, {
+                    new: true
+                });
+            };
+            kit.produtos = [];//reseta
+            //////////////////////add
+            await Promise.all(request.body.produtos.map(async produto => {
                 const prod = await Produto.findById(produto._id);//busca o kit pelo ID
+                await Produto.findByIdAndUpdate(produto._id, {
+                    $push: { "kits": request.params.id }
+                }, {
+                    new: true
+                });
                 kit.produtos.push(prod);//marca o produto no kit
             }));
 
@@ -67,6 +91,7 @@ module.exports = {
 
             return response.json(kit);
         } catch (error) {
+            console.log(error);
             return response.status(400).send({ error: 'Falha ao alterar um kit' })
         }
     },
@@ -74,10 +99,22 @@ module.exports = {
     async delete(request, response) {
         try {
 
+            const { produtos } = await Kit
+                .findOne({ _id: request.params.id });
+
+            for (prod of produtos) {
+                await Produto.findByIdAndUpdate(prod, {
+                    $pull: { "kits": request.params.id }
+                }, {
+                    new: true
+                });
+            };
+
             await Kit.deleteOne({ _id: request.params.id });
 
             return response.status(200).send('Ok');
         } catch (error) {
+            console.log(error);
             return response.status(400).send({ error: 'Falha ao apagar um produto' })
         }
     }
