@@ -68,10 +68,16 @@ module.exports = {
     async delete(request, response) {
         try {
 
-            await Produto.deleteOne({ cod: request.params.cod });
+            const produto = await Produto.findOne({ cod: request.params.cod }).select('kits');
 
-            return response.status(200).send('Ok');
+            if (Object.keys(produto.kits).length === 0) {//verifica se esta vazio antes de apagar
+                await Produto.deleteOne({ cod: request.params.cod });
+                return response.status(200).send('Ok');
+            }
+            return response.status(200).send('Erro, este produto pertence a um kit');
+
         } catch (error) {
+
             return response.status(400).send({ error: 'Falha ao apagar um produto' })
         }
     }
