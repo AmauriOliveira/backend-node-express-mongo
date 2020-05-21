@@ -20,7 +20,7 @@ module.exports = {
         }
     },
 
-    async create(request, response) {
+    async create(request, response, next) {
         try {
             const { cod, preco, nome, descricao, quantidade } = request.body;
 
@@ -37,7 +37,9 @@ module.exports = {
                 descricao,
                 quantidade,
             });
-            return response.json(produto);
+            //return response.json(produto);
+            return next();
+
         } catch (error) {
             return response.status(400).send({ error: 'Falha ao adcionar um novo produto' })
         }

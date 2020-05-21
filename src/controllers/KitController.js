@@ -35,7 +35,8 @@ module.exports = {
             await Promise.all(produtos.map(async produto => {
                 const prod = await Produto.findById(produto._id);//busca o kit pelo ID
                 await Produto.findByIdAndUpdate(produto._id, {
-                    $push: { "kits": [...prod.kits, kit._id] }
+
+                    $push: { "kits": [ kit._id] }
                 }, {
                     new: true
                 });

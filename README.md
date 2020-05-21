@@ -1,9 +1,14 @@
 # backend-node-express-mongo
+API Rest com **NodeJs**, **Express**, **MongoDB** feito para praticar e aprender, este é meu primeiro projeto usando **NOSQL** e meu primeiro projeto feito consultando manuais de refencias e dicas apenas.
 
-API Rest with NodeJs, Express, MongoDB
+## Instalar dependências
+`yarn install`
 
-yarn dev
+## tutum/mongodb
+`docker run -d -p 27017:27017 -p 28017:28017 -e AUTH=no tutum/mongodb`
 
-docker run -d -p 27017:27017 -p 28017:28017 -e AUTH=no tutum/mongodb
+## Executar
+`yarn start`
 
-yarn start
+## Executar modo DEV
+`yarn dev`
