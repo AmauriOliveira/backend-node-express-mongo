@@ -14,7 +14,7 @@ routes.post('/produtos', authMiddleware, ProdutoController.create, CaixMid.AddPr
 
 routes.post('/produtos_array', authMiddleware, ProdutoController.createArray);
 
-routes.put('/produtos/:cod', authMiddleware, ProdutoController.update);
+routes.put('/produtos/:cod', authMiddleware, ProdutoController.update,CaixMid.UpdateProduto);
 
 routes.delete('/produtos/:cod', authMiddleware, ProdutoController.delete);
 
@@ -28,7 +28,7 @@ routes.post('/authenticate', AuthController.auth);
 
 routes.get('/kit/:id?', KitController.index);
 
-routes.post('/kit', authMiddleware, KitController.create);
+routes.post('/kit', authMiddleware, KitController.create, CaixMid.AddKit);
 
 routes.put('/kit/:id', authMiddleware, KitController.update);
 

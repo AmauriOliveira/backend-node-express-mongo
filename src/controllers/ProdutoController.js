@@ -37,7 +37,6 @@ module.exports = {
                 descricao,
                 quantidade,
             });
-            //return response.json(produto);
             return next();
 
         } catch (error) {
@@ -55,13 +54,24 @@ module.exports = {
         }
     },
 
-    async update(request, response) {
+    async update(request, response, next) {
         try {
             const { preco, quantidade, nome, descricao } = request.body;
 
+            const valor = await Produto.findOne()
+                .where({ cod: request.params.cod })
+                .select('preco quantidade');
+
+            if (Object.keys(valor).length === 0) {
+
+                return response.status(400).send({ error: 'Falha' });
+            }
+            response.oldValor = valor.quantidade * valor.preco;
+
             await Produto.updateOne({ cod: request.params.cod }, { quantidade, preco, nome, descricao, createdAt: Date.now() })
 
-            return response.status(200).send('Ok');
+            //return response.status(200).send('Ok');
+            return next();
         } catch (error) {
             return response.status(400).send({ error: 'Falha ao alterar um produto' })
         }

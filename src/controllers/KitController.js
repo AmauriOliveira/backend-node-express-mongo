@@ -20,7 +20,7 @@ module.exports = {
         }
     },
 
-    async create(request, response) {
+    async create(request, response, next) {
         try {
             const { preco, nome, produtos, quantidade } = request.body;
 
@@ -36,7 +36,7 @@ module.exports = {
                 const prod = await Produto.findById(produto._id);//busca o kit pelo ID
                 await Produto.findByIdAndUpdate(produto._id, {
 
-                    $push: { "kits": [ kit._id] }
+                    $push: { "kits": [kit._id] }
                 }, {
                     new: true
                 });
@@ -45,7 +45,8 @@ module.exports = {
 
             await kit.save();
 
-            return response.json(kit);
+            return next();
+
         } catch (error) {
             console.log(error);
 
@@ -56,6 +57,16 @@ module.exports = {
     async update(request, response) {
         try {
             const { preco, nome, quantidade } = request.body;
+
+            const valor = await Kit.findOne()
+                .where({ _id: request.params.id })
+                .select('preco quantidade');
+
+            if (Object.keys(valor).length === 0) {
+
+                return response.status(400).send({ error: 'Falha' });
+            }
+            response.oldValor = valor.quantidade * valor.preco;
 
             const kit = await Kit.findByIdAndUpdate(request.params.id, {
                 preco,
