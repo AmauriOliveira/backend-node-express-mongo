@@ -54,7 +54,7 @@ module.exports = {
         }
     },
 
-    async update(request, response) {
+    async update(request, response, next) {
         try {
             const { preco, nome, quantidade } = request.body;
 
@@ -101,14 +101,14 @@ module.exports = {
 
             await kit.save();
 
-            return response.json(kit);
+            return next();
         } catch (error) {
             console.log(error);
             return response.status(400).send({ error: 'Falha ao alterar um kit' })
         }
     },
 
-    async delete(request, response) {
+    async delete(request, response,next) {
         try {
 
             const { produtos } = await Kit
@@ -122,9 +122,15 @@ module.exports = {
                 });
             };
 
-            await Kit.deleteOne({ _id: request.params.id });
+            const valor = await Kit.findOne()
+            .where({ _id: request.params.id })
+            .select('preco quantidade');
 
-            return response.status(200).send('Ok');
+            await Kit.deleteOne({ _id: request.params.id });
+            response.oldValor = valor.quantidade * valor.preco;
+
+            return next();
+
         } catch (error) {
             console.log(error);
             return response.status(400).send({ error: 'Falha ao apagar um produto' })

@@ -77,16 +77,17 @@ module.exports = {
         }
     },
 
-    async delete(request, response) {
+    async delete(request, response, next) {
         try {
 
-            const produto = await Produto.findOne({ cod: request.params.cod }).select('kits');
+            const produto = await Produto.findOne({ cod: request.params.cod }).select('kits preco quantidade');
 
             if (Object.keys(produto.kits).length === 0) {//verifica se esta vazio antes de apagar
                 await Produto.deleteOne({ cod: request.params.cod });
-                return response.status(200).send('Ok');
+                response.oldValor = produto.quantidade * produto.preco;
+                return next();
             }
-            return response.status(200).send('Erro, este produto pertence a um kit');
+            return response.status(400).send('Erro, este produto pertence a um kit');
 
         } catch (error) {
 

@@ -1,7 +1,7 @@
 const Caixa = require('../models/Caixa');
 
 module.exports = {
-
+    //////////////////
     async AddProduto(request, response) {
         try {
             const { preco, quantidade } = request.body;
@@ -25,7 +25,7 @@ module.exports = {
             return response.status(400).send({ error: 'Falha ao registras o valor do produtos no caixa.' });
         }
     },
-
+    /////////////////////////////////
     async UpdateProduto(request, response) {
         try {
             const { preco, quantidade } = request.body;
@@ -49,7 +49,28 @@ module.exports = {
             return response.status(400).send({ error: 'Falha ao registras o valor do produtos no caixa.' });
         }
     },
+    //////////////////////
+    async DeleteProduto(request, response) {
 
+        try {
+            const caixaProduto = await Caixa
+                .findOne()
+                .select('valorProduto');
+
+            await Caixa.updateOne({
+                _id: caixaProduto._id
+            },
+                {
+                    valorProduto: caixaProduto.valorProduto - response.oldValor,
+                    createdAt: Date.now()
+                });
+
+            return response.status(200).send('ok');
+
+        } catch (error) {
+            return response.status(400).send({ error: 'Falha ao registras o valor da saida caixa.' });
+        }
+    },
     /////////////////
 
     async AddKit(request, response) {
@@ -79,6 +100,7 @@ module.exports = {
             return response.status(400).send({ error: 'Falha ao registras o valor do kits no caixa.' });
         }
     },
+    /////////////////////////////////////
     async UpdateKit(request, response) {
         try {
             const { preco, quantidade } = request.body;
@@ -94,6 +116,28 @@ module.exports = {
                 });
 
             return response.status(201).send('ok');
+
+        } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
+            return response.status(400).send({ error: 'Falha ao registras o valor do produtos no caixa.' });
+        }
+    },
+    /////////////////////////////////////
+    async DeleteKit(request, response) {
+        try {
+            const caixaKit = await Caixa
+                .findOne()
+                .select('valorKit');
+
+            await Caixa.updateOne({ _id: caixaKit._id },
+                {
+                    valorKit: caixaKit.valorKit - response.oldValor,
+                    createdAt: Date.now()
+                });
+
+            return response.status(200).send('ok');
 
         } catch (error) {
 
