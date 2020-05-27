@@ -30,7 +30,7 @@ module.exports = {
             if (await Produto.findOne({ nome })) {
                 return response.status(400).send({ error: 'Falha: Produto com este nome já existe' })
             }
-            const produto = await Produto.create({
+            await Produto.create({
                 cod,
                 preco,
                 nome,

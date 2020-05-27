@@ -118,9 +118,6 @@ module.exports = {
             return response.status(201).send('ok');
 
         } catch (error) {
-            console.log('====================================');
-            console.log(error);
-            console.log('====================================');
             return response.status(400).send({ error: 'Falha ao registras o valor do produtos no caixa.' });
         }
     },

@@ -80,13 +80,13 @@ module.exports = {
             const { produtos } = await Kit
                 .findOne({ _id: request.params.id });
 
-            for (prod of produtos) {
+            for (let prod of produtos) {
                 await Produto.findByIdAndUpdate(prod, {
                     $pull: { "kits": request.params.id }
                 }, {
                     new: true
                 });
-            };
+            }
             kit.produtos = [];//reseta
             //////////////////////add
             await Promise.all(request.body.produtos.map(async produto => {
@@ -120,7 +120,7 @@ module.exports = {
                 }, {
                     new: true
                 });
-            };
+            }
 
             const valor = await Kit.findOne()
             .where({ _id: request.params.id })
