@@ -114,7 +114,7 @@ module.exports = {
             const { produtos } = await Kit
                 .findOne({ _id: request.params.id });
 
-            for (prod of produtos) {
+            for (let prod of produtos) {
                 await Produto.findByIdAndUpdate(prod, {
                     $pull: { "kits": request.params.id }
                 }, {
