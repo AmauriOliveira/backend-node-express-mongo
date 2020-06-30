@@ -1,0 +1,36 @@
+type Produto {
+    id: ID!
+    cod: Int!
+    preco: Float!
+    nome: String!
+    descricao: String
+    quantidade: Int!
+}
+
+type Kit{
+    id: ID!
+    preco: Float!
+    nome: String!
+    quantidade: Int!
+}
+
+type Auth{
+    _id: ID!
+    nome: String!
+    email: String!
+    senha: String!
+}
+
+type Caixa{
+   valorKit: Float!
+   valorProduto: Float!
+   createdAt: Float!
+}
+
+type Query{
+    Caixa: Caixa
+    Auth: Auth
+    produtos: [Produto!]!
+    produto(cod: Int!): [Produto]
+    Kit: Kit
+}
