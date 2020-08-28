@@ -1,7 +1,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AmauriOliveira_backend-node-express-mongo&metric=alert_status)](https://sonarcloud.io/dashboard?id=AmauriOliveira_backend-node-express-mongo)
 
 # backend-node-express-mongo
-API Graphql com **NodeJs**, **Graphql-yoga**, **MongoDB** feito para praticar e aprender, este é meu primeiro projeto usando **NOSQL** e meu primeiro projeto feito consultando manuais de refencias e dicas apenas.
+API Graphql com **NodeJs**, **Graphql-yoga**, **MongoDB** feito para praticar e aprender, este é meu primeiro projeto usando **NOSQL** e meu primeiro projeto feito consultando manuais de referencias e dicas apenas.
 
 ## Instalar dependências
 `yarn install`
